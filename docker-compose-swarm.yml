@@ -4,7 +4,7 @@ services:
   app:
     build: ./app
     image: harbor01.cssnr.com/shane/docker-test-app:latest
-    env_file: settings.env
+    env_file: settings.env.example
     entrypoint: ["bash", "init.sh", "app"]
     command: "gunicorn self_service.wsgi:application --workers 2 -b 0.0.0.0:9000"
     healthcheck:
@@ -27,7 +27,7 @@ services:
   nginx:
     build: ./nginx
     image: harbor01.cssnr.com/shane/docker-test-nginx:latest
-    env_file: settings.env
+    env_file: settings.env.example
     healthcheck:
       interval: 1m
       timeout: 10s

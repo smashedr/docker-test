@@ -1,0 +1,43 @@
+{% extends "main.html" %}
+{% load staticfiles %}
+{% load home_tags %}
+{% block profile_active %}active{% endblock %}
+{% block title %}Profile{% endblock %}
+
+{% block head %}{% endblock %}
+{% block tail %}{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col">
+            {% if ldap %}
+                {% if ldap.thumbnailphoto.0 %}
+                    <img src="{{ ldap.thumbnailphoto.0|b64_image:'image/jpeg' }}"
+                         class="img-thumbnail float-right mt-2" height="192px" width="192px" />
+                {% else %}
+                    <img src="{% static 'images/felix192.jpg' %}"
+                         class="img-thumbnail float-right mt-2" height="192px" width="192px" />
+                {% endif %}
+
+                <h1>{{ ldap.name.0 }}</h1>
+
+                <p><strong>Title:</strong> {{ ldap.title.0 }}</p>
+                <p><strong>E-Mail:</strong> {{ user.email }}</p>
+                <p><strong>Phone:</strong> {{ ldap.telephoneNumber.0 }}</p>
+                <p><strong>Location:</strong> {{ ldap.l.0 }}, {{ ldap.st.0 }}</p>
+
+                <hr>
+
+                <h4>Groups</h4>
+                <ul class="group-list">
+                    {% for group in user.ldap_user.group_names|dictsort:0 %}
+                        <li>{{ group }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h1>Profile</h1>
+                <p class="lead">Oops, no profile data found for your user. This usually happens when you are not an AD/LDAP user.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,8 +1,0 @@
-django<3
-djangorestframework<4
-django_auth_ldap<2
-django-filter
-gunicorn
-markdown
-pyldap
-requests

@@ -1,0 +1,9 @@
+django<3
+django_auth_ldap<2
+django-debug-toolbar
+django-extensions<3
+gunicorn
+mysqlclient
+pyldap
+requests
+Werkzeug

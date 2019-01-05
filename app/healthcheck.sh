@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-PORT="443"
-PROT="https"
+PORT="9000"
+PROT="http"
 
 set -e
 

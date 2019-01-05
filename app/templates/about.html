@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+{% load staticfiles %}
+{% load home_tags %}
+{% block about_active %}active{% endblock %}
+{% block title %}About{% endblock %}
+
+{% block head %}{% endblock %}
+{% block tail %}{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col">
+            <h1>About</h1>
+            <p>The Self Service Dashboard is a collection of Legacy tools created by the former Tools Engineering team.
+                Release Engineering is currently in the process of transitioning over to a DevOps model.</p>
+
+            <h2>DevOps</h2>
+            <blockquote class="blockquote"><p>DevOps is the practice of operations and development engineers
+                participating together in the entire service lifecycle, from design through the development process
+                and to production support.</p></blockquote>
+
+            <h3>Goals</h3>
+            <p class="lead">Our goal is to increase throughput while at the same time reducing work in progress and operating expense.</p>
+            <ul>
+                <li>Improve deployment frequency</li>
+                <li>Achieve faster time to market</li>
+                <li>Lower failure rate of new releases</li>
+                <li>Shorten lead time between fixes</li>
+                <li>Improve mean time to recovery</li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

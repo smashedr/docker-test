@@ -1,0 +1,110 @@
+{% extends "main.html" %}
+{% load staticfiles %}
+{% block title %}Login{% endblock %}
+
+{% block head %}
+	<style type="text/css">
+		body { background-image: url("{% static 'images/login-bg.jpg' %}"); }
+    </style>
+    <link rel="stylesheet" href="{% static "main/css/login.css" %}">
+{% endblock %}
+{% block tail %}{% endblock %}
+
+{% block menu %}{% endblock %}
+{% block messages %}{% endblock %}
+
+{% block body %}
+
+	<div class="row mt-5">
+        <div class="col">
+
+            <div id="login-outer" class="animated fadeIn m-auto p-4">
+                <div class="text-center">
+                    <img class="img-responsive" src="{% static 'images/logo96.png' %}" alt="Prod CM Tool">
+                    <h3>Self Service Dashboard</h3>
+                </div>
+
+                <form class="submit-once" method="POST" name="login" id="login" action="{% url 'login:login' %}">
+                    {% csrf_token %}
+
+                    <label for="adUser" class="">AD Username:</label>
+                    <input type="text" name="adUser" class="form-control" placeholder="AD Username" required autofocus>
+
+                    <label for="adPass" class="">AD Password:</label>
+                    <input type="password" name="adPass" class="form-control" placeholder="AD Password" required>
+
+                    {% if request.GET.next %}
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
+                    {% elif request.session.login_next_url %}
+                        <input type="hidden" name="next" value="{{ request.session.login_next_url }}">
+                    {% endif %}
+
+                    <div class="mt-2">
+                        <button id="login-button" class="btn btn-primary" type="submit">
+                            Log In <i class="fa fa-sign-in" aria-hidden="true"></i>
+                        </button>
+                        <div class="float-right">
+                            <a href="{% url 'home:index' %}" class="btn btn-outline-primary text-right" role="button">
+                                Go Home <i class="fa fa-home" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+
+                    {% if messages %}
+                        <div id="login-message" class="mt-2">
+                            <ul class="list-group text-center">
+                                {% for message in messages %}
+                                    <li class="list-group-item list-group-item-{{ message.extra_tags }}">{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <hr>
+
+                    <div class="text-center">
+                        <p>
+                            <a href="#" data-toggle="modal" data-target="#password-modal" class="ml-2">
+                                Forgot Password? <i class="fa fa-question-circle-o" aria-hidden="true"></i></a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+	</div>
+
+    <div class="modal fade" id="password-modal" tabindex="-1" role="dialog" aria-labelledby="password-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="password-modal-label">Forgot Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        1. E-Mail
+                        <a href="mailto:abuse@aol.com">
+                            abuse@aol.com <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                    </p>
+                    <p>
+                        2. Call Help at
+                        <a href="tel:5555555555">
+                            (555) 5555-5555 <i class="fa fa-phone" aria-hidden="true"></i></a>
+                    </p>
+                    <p>
+                        3. Visit 4th Floor Walkup Helpdesk <i class="fa fa-users" aria-hidden="true"></i>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">
+                        Close Window <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

@@ -3,7 +3,7 @@ version: '3.3'
 services:
   app:
     build: ./app
-    image: docker-test-app:latest
+    image: 127.0.0.1:5000/docker-test-app:latest
     env_file: settings.env
     entrypoint: ["bash", "init.sh", "app"]
     command: "gunicorn self_service.wsgi:application --workers 2 -b 0.0.0.0:9000"
@@ -26,7 +26,7 @@ services:
 
   nginx:
     build: ./nginx
-    image: docker-test-nginx:latest
+    image: 127.0.0.1:5000/docker-test-nginx:latest
     env_file: settings.env
     healthcheck:
       interval: 1m
@@ -56,9 +56,9 @@ services:
 
 secrets:
   cssnr.com.crt:
-    file: /etc/ssl/cssnr.com.crt
+    external: true
   cssnr.com.key:
-    file: /etc/ssl/cssnr.com.key
+    external: true
 
 volumes:
   data_dir:

@@ -1,0 +1,57 @@
+{% extends "main.html" %}
+{% load staticfiles %}
+{% load home_tags %}
+{% block tool_active %}active{% endblock %}
+{% block title %}{{ tool.name }}{% endblock %}
+
+{% block head %}{% endblock %}
+{% block tail %}
+    <script type="text/javascript" src="{% static 'clipboardjs/clipboard.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'main/js/clip.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col">
+            <h1>{{ tool.name }}</h1>
+            <p class="lead">{{ tool.description }}</p>
+
+            <table class="table table-sm table-responsive">
+                <tbody>
+                {% if tool.url %}
+                <tr>
+                    <th scope="row"><i class="fa fa-globe" aria-hidden="true"></i> Site</th>
+                    <td>
+                        <a href="#" data-clipboard-text="{{ tool.url }}" class="copy-data popovers pop"
+                           role="button" data-toggle="popover" title="" data-content="Copied URL" data-placement="bottom" >
+                            <i class="fa fa-clipboard" aria-hidden="true"></i></a>
+                    </td>
+                    <td><a href="{{ tool.url }}" target="_blank">{{ tool.url }}</a></td>
+                </tr>
+                {% endif %}
+                {% if tool.git_url %}
+                <tr>
+                    <th scope="row"><i class="fa fa-github" aria-hidden="true"></i> GitHub</th>
+                    <td>
+                        <a href="#" data-clipboard-text="{{ tool.git_url }}" class="copy-data popovers pop"
+                           role="button" data-toggle="popover" title="" data-content="Copied URL" data-placement="bottom" >
+                            <i class="fa fa-clipboard" aria-hidden="true"></i></a>
+                    </td>
+                    <td><a href="{{ tool.git_url }}" target="_blank">{{ tool.git_url }}</a></td>
+                </tr>
+                {% endif %}
+                </tbody>
+            </table>
+
+            {% if tool.legacy %}
+                <p><em>This is a legacy tool and may not receive new feature updates.</em></p>
+            {% endif %}
+
+            <a href="{% url 'home:index' %}" class="btn btn-outline-primary my-1"> Go Back Home
+                <i class="fa fa-home" aria-hidden="true"></i></a>
+
+        </div>
+    </div>
+
+{% endblock %}

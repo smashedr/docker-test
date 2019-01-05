@@ -1,0 +1,65 @@
+version: '3.3'
+
+services:
+  django:
+    build: ./django
+    image: django-demo-django:latest
+    env_file: settings.env
+    healthcheck:
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      test: ["CMD-SHELL", "bash healthcheck.sh"]
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 1G
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+    expose:
+      - "9000"
+
+  nginx:
+    build: ./nginx
+    image: django-demo-nginx:latest
+    env_file: settings.env
+    healthcheck:
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      test: ["CMD-SHELL", "bash healthcheck.sh"]
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+    expose:
+      - "443"
+    links:
+      - django:django
+    depends_on:
+      - django
+    ports:
+      - "10123:443"
+#    secrets:
+#      - source: forslbtohost.crt
+#        target: /etc/ssl/forslbtohost.crt
+#      - source: forslbtohost.key
+#        target: /etc/ssl/forslbtohost.key
+
+#secrets:
+#  forslbtohost.crt:
+#    file: /etc/ssl/forslbtohost.crt
+#  forslbtohost.key:
+#    file: /etc/ssl/forslbtohost.key

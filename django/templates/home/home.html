@@ -1,0 +1,22 @@
+{% extends "home/main.html" %}
+{% load staticfiles %}
+{% block home_active %}class="active"{% endblock %}
+{% block title %}Start Page{% endblock %}
+
+{% block head %}
+	<script type="text/javascript" src="{% static 'js/home.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <p class="pull-right"><small>Last Login: {{ user.last_login }}</small></p>
+            <p class="lead">
+                Welcome to the Docker Port Mapper, <strong>{{ user.first_name|default:user.username }}</strong>.
+            </p>
+            <p>There is actually nothing to do here, yet. Head over to the API or Admin panel to look around.</p>
+        </div>
+    </div>
+
+{% endblock %}

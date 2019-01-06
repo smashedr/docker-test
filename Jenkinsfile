@@ -48,7 +48,8 @@ pipeline {
         stage('Production Deployment') {
             when {
                 allOf {
-                    equals expected: 'origin/master', actual: env.GIT_BRANCH
+                    //equals expected: 'origin/master', actual: env.GIT_BRANCH
+                    branch 'master'
                     triggeredBy 'UserIdCause'
                 }
             }

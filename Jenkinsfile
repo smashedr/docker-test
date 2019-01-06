@@ -9,12 +9,12 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
         ansiColor('xterm')
     }
-//    environment {
-//        GIT_ORG = "shane"
-//        GIT_REPO = "docker-test"
-//        STACK_NAME = "${GIT_ORG}-${docker-test}"
-//        COMPOSE_FILE = "docker-compose-swarm.yml"
-//    }
+    environment {
+        GIT_ORG = "shane"
+        GIT_REPO = "docker-test"
+        STACK_NAME = "${GIT_ORG}-${docker-test}"
+        COMPOSE_FILE = "docker-compose-swarm.yml"
+    }
     stages {
         stage('Init') {
             steps {

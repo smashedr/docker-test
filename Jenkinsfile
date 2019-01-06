@@ -14,14 +14,14 @@ pipeline {
         GIT_REPO = "docker-test"
         STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
         COMPOSE_FILE = "docker-compose-swarm.yml"
-        def specificCause = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
+        BUILD_CAUSE = currentBuild.rawBuild.getCause()
     }
     stages {
         stage('Init') {
             steps {
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
-                echo "${specificCause}"
+                echo "${BUILD_CAUSE}"
             }
         }
         stage('Dev Deployment') {
@@ -29,8 +29,8 @@ pipeline {
                 not { equals expected: 'origin/master', actual: env.GIT_BRANCH }
             }
             environment {
-                GString ENV_FILE = "${GIT_REPO}/dev.env"
-                GString FULL_STACK_NAME = "dev_${STACK_NAME}"
+                ENV_FILE = "${GIT_REPO}/dev.env"
+                FULL_STACK_NAME = "dev_${STACK_NAME}"
             }
             steps {
                 echo "this is a dev deployment"

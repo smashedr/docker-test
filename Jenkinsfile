@@ -17,15 +17,15 @@ pipeline {
     }
     stages {
         stage('Init') {
+            when { equals expected: 'origin/master', actual: env.GIT_BRANCH }
             steps {
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
-                echo COMPOSE_FILE
                 echo "${env.GIT_BRANCH}"
             }
         }
         stage('Dev Deployment') {
             when {
-                triggeredBy 'GitLabTrigger'
+                triggeredBy 'SCMTrigger'
             }
             environment {
                 ENV_FILE = "${GIT_REPO}/dev.env"
@@ -45,9 +45,9 @@ pipeline {
             }
         }
         stage('Production Deployment') {
-//            when {
-//                branch '*/master'
-//            }
+            when {
+                triggeredBy user
+            }
             environment {
                 ENV_FILE = "${GIT_REPO}/dev.env"
                 FULL_STACK_NAME = "prod_${STACK_NAME}"

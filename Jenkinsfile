@@ -25,10 +25,7 @@ pipeline {
         }
         stage('Dev Deployment') {
             when {
-                allOf {
-                    not { triggeredBy 'UserIdCause' }
-                    changeRequest()
-                }
+                not { triggeredBy 'UserIdCause' }
             }
             environment {
                 GString ENV_FILE = "${GIT_REPO}/dev.env"

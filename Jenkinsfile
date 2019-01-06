@@ -12,7 +12,7 @@ pipeline {
     environment {
         GIT_ORG = "shane"
         GIT_REPO = "docker-test"
-        STACK_NAME = "${GIT_ORG}-${docker-test}"
+        STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
         COMPOSE_FILE = "docker-compose-swarm.yml"
     }
     stages {

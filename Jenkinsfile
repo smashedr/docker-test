@@ -17,10 +17,10 @@ pipeline {
     }
     stages {
         stage('Init') {
-            when { equals expected: 'origin/master', actual: env.GIT_BRANCH }
             steps {
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
+                echo currentBuild.rawBuild.getCause().toString()
             }
         }
         stage('Dev Deployment') {
@@ -47,7 +47,10 @@ pipeline {
         }
         stage('Production Deployment') {
             when {
-                equals expected: 'origin/master', actual: env.GIT_BRANCH
+                allOf {
+                    currentBuild.rawBuild.getCause().toString().contains('UserIdCause')
+                    equals expected: 'origin/master', actual: env.GIT_BRANCH
+                }
             }
             environment {
                 ENV_FILE = "${GIT_REPO}/prod.env"
@@ -59,9 +62,11 @@ pipeline {
                                   usernameVariable: 'USERNAME',
                                   passwordVariable: 'PASSWORD']])
                         {
+                            // build should happen in different step, but combining now for simplicity
                             sh "docker-compose -f ${COMPOSE_FILE} build --force-rm"
                             sh "docker login --username ${USERNAME} --password ${PASSWORD} harbor01.cssnr.com"
                             sh "docker-compose -f ${COMPOSE_FILE} push"
+                            // this should be the only thing done on a manager node and building should be on a slave
                             sh "docker stack deploy ${FULL_STACK_NAME} -c ${COMPOSE_FILE} --with-registry-auth"
                         }
             }

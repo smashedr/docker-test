@@ -18,9 +18,9 @@ pipeline {
     stages {
         stage('Init') {
             steps {
+                // Checkout config files here...
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
-                // echo "${CAUSES}"
             }
         }
         stage('Dev Deployment') {

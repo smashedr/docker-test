@@ -22,7 +22,6 @@ pipeline {
             steps {
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
-                echo "${HUMAN_BUILD}"
                 // echo "${CAUSES}"
             }
         }

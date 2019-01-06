@@ -16,15 +16,16 @@ pipeline {
         COMPOSE_FILE = "docker-compose-swarm.yml"
     }
     stages {
-        //stage('Init') {
-        //    steps {
-        //        getEnvFiles("${GIT_ORG}-${GIT_REPO}")
-        //    }
-        //}
-        stage('Dev Deployment') {
-            when {
-                triggeredBy 'SCMTrigger'
+        stage('Init') {
+            steps {
+                //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
+                echo env.BRANCH_NAME
             }
+        }
+        stage('Dev Deployment') {
+//            when {
+//                triggeredBy 'SCMTrigger'
+//            }
             environment {
                 ENV_FILE = "${GIT_REPO}/dev.env"
                 FULL_STACK_NAME = "dev_${STACK_NAME}"

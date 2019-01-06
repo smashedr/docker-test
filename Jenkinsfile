@@ -23,8 +23,8 @@ pipeline {
                 // Checkout config files here...
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
-                VERSION = script { ("${env.GIT_BRANCH}" =~ /master/) ? "latest" : "${env.GIT_BRANCH}" }
-                echo "VERSION: ${VERSION}"
+                script { env.VERSION = ("${env.GIT_BRANCH}" =~ /master/) ? "latest" : "${env.GIT_BRANCH}" }
+                echo "VERSION: ${env.VERSION}"
 
 
                 withCredentials(bindings: [sshUserPrivateKey(

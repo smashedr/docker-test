@@ -27,7 +27,7 @@ pipeline {
         }
         stage('Dev Deployment') {
             when {
-                not { equals expected: 'origin/master', actual: env.GIT_BRANCH }
+                not { triggeredBy 'UserIdCause' }
             }
             environment {
                 ENV_FILE = "${GIT_REPO}/dev.env"

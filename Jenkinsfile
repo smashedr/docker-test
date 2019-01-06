@@ -23,11 +23,24 @@ pipeline {
                 // Checkout config files here...
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
+                echo "${env.GIT_BRANCH}"
+                VERSION = ("${env.GIT_BRANCH}" =~ /master/) ? "latest" : "${env.GIT_BRANCH}"
+                echo "VERSION: ${VERSION}"
+
+
+                withCredentials(bindings: [sshUserPrivateKey(
+                        credentialsId: '4aac7d8c-0463-449d-8fa7-b0550b5a5e77',
+                        keyFileVariable: 'SSH_KEY')]) {
+                    echo "SSH_KEY: ${SSH_KEY}"
+                }
+
+
+
             }
         }
         stage('Dev Deployment') {
             when {
-                not { triggeredBy 'UserIdCause' }
+                triggeredBy 'UserIdCause-DISABLED'
             }
             environment {
                 GString ENV_FILE = "${GIT_REPO}/dev.env"
@@ -39,15 +52,16 @@ pipeline {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding',
                                   credentialsId: '5c9a657c-23e1-43f6-a3b0-11e455d02902',
                                   usernameVariable: 'USERNAME',
-                                  passwordVariable: 'PASSWORD']])
-                        {
-                            // build should happen in different step, but combining now for simplicity
-                            sh "docker-compose -f ${COMPOSE_FILE} build --force-rm"
-                            sh "docker login --username ${USERNAME} --password ${PASSWORD} harbor01.cssnr.com"
-                            sh "docker-compose -f ${COMPOSE_FILE} push"
-                            // this should be the only thing done on a manager node and building should be on a slave
-                            sh "docker stack deploy ${FULL_STACK_NAME} -c ${COMPOSE_FILE} --with-registry-auth"
-                        }
+                                  passwordVariable: 'PASSWORD']]) {
+
+                    // build should happen in different step, but combining now for simplicity
+                    sh "docker-compose -f ${COMPOSE_FILE} build --force-rm"
+                    sh "docker login --username ${USERNAME} --password ${PASSWORD} harbor01.cssnr.com"
+                    sh "docker-compose -f ${COMPOSE_FILE} push"
+                    // this should be the only thing done on a manager node and building should be on a slave
+                    sh "docker stack deploy ${FULL_STACK_NAME} -c ${COMPOSE_FILE} --with-registry-auth"
+
+                }
             }
         }
         stage('Production Deployment') {
@@ -68,15 +82,16 @@ pipeline {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding',
                                   credentialsId: '5c9a657c-23e1-43f6-a3b0-11e455d02902',
                                   usernameVariable: 'USERNAME',
-                                  passwordVariable: 'PASSWORD']])
-                        {
-                            // build should happen in different step, but combining now for simplicity
-                            sh "docker-compose -f ${COMPOSE_FILE} build --force-rm"
-                            sh "docker login --username ${USERNAME} --password ${PASSWORD} harbor01.cssnr.com"
-                            sh "docker-compose -f ${COMPOSE_FILE} push"
-                            // this should be the only thing done on a manager node and building should be on a slave
-                            sh "docker stack deploy ${FULL_STACK_NAME} -c ${COMPOSE_FILE} --with-registry-auth"
-                        }
+                                  passwordVariable: 'PASSWORD']]) {
+
+                    // build should happen in different step, but combining now for simplicity
+                    sh "docker-compose -f ${COMPOSE_FILE} build --force-rm"
+                    sh "docker login --username ${USERNAME} --password ${PASSWORD} harbor01.cssnr.com"
+                    sh "docker-compose -f ${COMPOSE_FILE} push"
+                    // this should be the only thing done on a manager node and building should be on a slave
+                    sh "docker stack deploy ${FULL_STACK_NAME} -c ${COMPOSE_FILE} --with-registry-auth"
+
+                }
             }
         }
     }

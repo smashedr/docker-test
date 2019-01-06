@@ -24,6 +24,8 @@ pipeline {
                 echo "${env.GIT_BRANCH}"
                 echo "${HUMAN_BUILD}"
                 echo "${causes}"
+                echo "${causes}[0]"
+                echo HUMAN_BUILD.contains('UserIdCause')
             }
         }
         stage('Dev Deployment') {

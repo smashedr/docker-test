@@ -25,11 +25,11 @@ pipeline {
             when {
                 changeRequest()
             }
+            environment {
+                ENV_FILE = "${GIT_REPO}/dev.env"
+                FULL_STACK_NAME = "dev_${STACK_NAME}"
+            }
             steps {
-                environment {
-                    ENV_FILE = "${GIT_REPO}/dev.env"
-                    FULL_STACK_NAME = "dev_${STACK_NAME}"
-                }
                 withCredentials([[$class: 'UsernamePasswordMultiBinding',
                                   credentialsId: '5c9a657c-23e1-43f6-a3b0-11e455d02902',
                                   usernameVariable: 'USERNAME',
@@ -46,11 +46,11 @@ pipeline {
             when {
                 branch 'master'
             }
+            environment {
+                ENV_FILE = "${GIT_REPO}/dev.env"
+                FULL_STACK_NAME = "prod_${STACK_NAME}"
+            }
             steps {
-                environment {
-                    ENV_FILE = "${GIT_REPO}/dev.env"
-                    FULL_STACK_NAME = "prod_${STACK_NAME}"
-                }
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding',
                                   credentialsId: '5c9a657c-23e1-43f6-a3b0-11e455d02902',

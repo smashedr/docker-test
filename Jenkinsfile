@@ -15,7 +15,7 @@ pipeline {
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
         String COMPOSE_FILE = "docker-compose-swarm.yml"
         // HUMAN_BUILD = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
-        def CAUSES = currentBuild.rawBuild.getCauses()
+        // def CAUSES = currentBuild.rawBuild.getCauses()
     }
     stages {
         stage('Init') {
@@ -23,7 +23,7 @@ pipeline {
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
                 echo "${HUMAN_BUILD}"
-                echo "${CAUSES}"
+                // echo "${CAUSES}"
             }
         }
         stage('Dev Deployment') {

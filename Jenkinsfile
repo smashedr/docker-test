@@ -14,14 +14,16 @@ pipeline {
         GIT_REPO = "docker-test"
         STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
         COMPOSE_FILE = "docker-compose-swarm.yml"
-        BUILD_CAUSE = currentBuild.rawBuild.getCause()
+        HUMAN_BUILD = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
+        def causes = currentBuild.rawBuild.getCauses()
     }
     stages {
         stage('Init') {
             steps {
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
-                echo "${BUILD_CAUSE}"
+                echo "${HUMAN_BUILD}"
+                echo "${causes}"
             }
         }
         stage('Dev Deployment') {
@@ -51,7 +53,7 @@ pipeline {
                 allOf {
                     // currentBuild.rawBuild.getCause().toString().contains('UserIdCause')
                     equals expected: 'origin/master', actual: env.GIT_BRANCH
-                    expression { return specificCause.contains('UserIdCause') }
+                    expression { return HUMAN_BUILD.contains('UserIdCause') }
                 }
             }
             environment {

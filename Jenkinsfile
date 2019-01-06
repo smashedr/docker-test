@@ -14,12 +14,14 @@ pipeline {
         GIT_REPO = "docker-test"
         STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
         COMPOSE_FILE = "docker-compose-swarm.yml"
+        def specificCause = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
     }
     stages {
         stage('Init') {
             steps {
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
+                echo "${specificCause}"
                 echo currentBuild.rawBuild.getCause().toString()
             }
         }
@@ -48,7 +50,7 @@ pipeline {
         stage('Production Deployment') {
             when {
                 allOf {
-                    currentBuild.rawBuild.getCause().toString().contains('UserIdCause')
+                    // currentBuild.rawBuild.getCause().toString().contains('UserIdCause')
                     equals expected: 'origin/master', actual: env.GIT_BRANCH
                 }
             }

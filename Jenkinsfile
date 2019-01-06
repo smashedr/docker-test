@@ -12,6 +12,8 @@ pipeline {
     environment {
         String GIT_ORG = "shane"
         String GIT_REPO = "docker-test"
+        String DOCKER_PORT_DEV = '10123'
+        String DOCKER_PORT_PROD = '10124'
         String COMPOSE_FILE = "docker-compose-swarm.yml"
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
     }
@@ -30,6 +32,7 @@ pipeline {
             environment {
                 GString ENV_FILE = "${GIT_REPO}/dev.env"
                 GString FULL_STACK_NAME = "dev_${STACK_NAME}"
+                GString DOCKER_PORT = "${DOCKER_PORT_DEV}"
             }
             steps {
                 echo "this is a dev deployment"
@@ -56,6 +59,7 @@ pipeline {
             environment {
                 GString ENV_FILE = "${GIT_REPO}/prod.env"
                 GString FULL_STACK_NAME = "prod_${STACK_NAME}"
+                GString DOCKER_PORT = "${DOCKER_PORT_PROD}"
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding',

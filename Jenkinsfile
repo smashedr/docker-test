@@ -24,7 +24,6 @@ pipeline {
                 echo "${env.GIT_BRANCH}"
                 echo "${HUMAN_BUILD}"
                 echo "${CAUSES}"
-                echo "${CAUSES}[0]"
             }
         }
         stage('Dev Deployment') {

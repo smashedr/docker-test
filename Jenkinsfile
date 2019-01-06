@@ -22,7 +22,6 @@ pipeline {
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
                 echo "${specificCause}"
-                echo currentBuild.rawBuild.getCause().toString()
             }
         }
         stage('Dev Deployment') {
@@ -30,8 +29,8 @@ pipeline {
                 not { equals expected: 'origin/master', actual: env.GIT_BRANCH }
             }
             environment {
-                ENV_FILE = "${GIT_REPO}/dev.env"
-                FULL_STACK_NAME = "dev_${STACK_NAME}"
+                GString ENV_FILE = "${GIT_REPO}/dev.env"
+                GString FULL_STACK_NAME = "dev_${STACK_NAME}"
             }
             steps {
                 echo "this is a dev deployment"
@@ -52,6 +51,7 @@ pipeline {
                 allOf {
                     // currentBuild.rawBuild.getCause().toString().contains('UserIdCause')
                     equals expected: 'origin/master', actual: env.GIT_BRANCH
+                    expression { return specificCause.contains('UserIdCause') }
                 }
             }
             environment {

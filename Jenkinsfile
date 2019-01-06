@@ -44,7 +44,7 @@ pipeline {
         }
         stage('Production Deployment') {
             when {
-                branch 'master'
+                branch 'origin/master'
             }
             environment {
                 ENV_FILE = "${GIT_REPO}/dev.env"

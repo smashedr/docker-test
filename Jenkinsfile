@@ -25,7 +25,7 @@ pipeline {
         }
         stage('Dev Deployment') {
             when {
-                triggeredBy 'SCMTrigger'
+                triggeredBy 'GitLabTrigger'
             }
             environment {
                 ENV_FILE = "${GIT_REPO}/dev.env"
@@ -45,9 +45,9 @@ pipeline {
             }
         }
         stage('Production Deployment') {
-            when {
-                branch '*/master'
-            }
+//            when {
+//                branch '*/master'
+//            }
             environment {
                 ENV_FILE = "${GIT_REPO}/dev.env"
                 FULL_STACK_NAME = "prod_${STACK_NAME}"

@@ -10,12 +10,12 @@ pipeline {
         ansiColor('xterm')
     }
     environment {
-        GIT_ORG = "shane"
-        GIT_REPO = "docker-test"
-        STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
-        COMPOSE_FILE = "docker-compose-swarm.yml"
-        HUMAN_BUILD = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
-        def causes = currentBuild.rawBuild.getCauses()
+        String GIT_ORG = "shane"
+        String GIT_REPO = "docker-test"
+        GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
+        String COMPOSE_FILE = "docker-compose-swarm.yml"
+        // HUMAN_BUILD = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)
+        def CAUSES = currentBuild.rawBuild.getCauses()
     }
     stages {
         stage('Init') {
@@ -23,9 +23,8 @@ pipeline {
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
                 echo "${env.GIT_BRANCH}"
                 echo "${HUMAN_BUILD}"
-                echo "${causes}"
-                echo "${causes}[0]"
-                echo HUMAN_BUILD.contains('UserIdCause')
+                echo "${CAUSES}"
+                echo "${CAUSES}[0]"
             }
         }
         stage('Dev Deployment') {
@@ -55,7 +54,7 @@ pipeline {
                 allOf {
                     // currentBuild.rawBuild.getCause().toString().contains('UserIdCause')
                     equals expected: 'origin/master', actual: env.GIT_BRANCH
-                    expression { return HUMAN_BUILD.contains('UserIdCause') }
+                    triggeredBy 'UserIdCause'
                 }
             }
             environment {

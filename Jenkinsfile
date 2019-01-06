@@ -9,12 +9,12 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
         ansiColor('xterm')
     }
-    environment {
-        GIT_ORG = "shane"
-        GIT_REPO = "docker-test"
-        STACK_NAME = "${GIT_ORG}-${docker-test}"
-        COMPOSE_FILE = "docker-compose-swarm.yml"
-    }
+//    environment {
+//        GIT_ORG = "shane"
+//        GIT_REPO = "docker-test"
+//        STACK_NAME = "${GIT_ORG}-${docker-test}"
+//        COMPOSE_FILE = "docker-compose-swarm.yml"
+//    }
     stages {
         stage('Init') {
             steps {
@@ -54,12 +54,6 @@ pipeline {
 //            }
             steps {
                 echo "start prod deploy"
-
-
-                sh "docker-compose -f ${COMPOSE_FILE} build --force-rm"
-                sh "docker login --username ${USERNAME} --password ${PASSWORD} harbor01.cssnr.com"
-                sh "docker-compose -f ${COMPOSE_FILE} push"
-                sh "docker stack deploy ${FULL_STACK_NAME} -c ${COMPOSE_FILE} --with-registry-auth"
 
 //                withCredentials([[$class: 'UsernamePasswordMultiBinding',
 //                                  credentialsId: '5c9a657c-23e1-43f6-a3b0-11e455d02902',

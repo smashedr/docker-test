@@ -16,21 +16,25 @@ pipeline {
         String PROD_PORT_0 = '10124'
         String COMPOSE_FILE = "docker-compose-swarm.yml"
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
+        VERSION = ("${env.GIT_BRANCH}" =~ /master/) ? "latest" : "${env.GIT_BRANCH}"
     }
     stages {
         stage('Init') {
             steps {
                 // Checkout config files here...
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
-                echo "${env.GIT_BRANCH}"
                 script { env.VERSION = ("${env.GIT_BRANCH}" =~ /master/) ? "latest" : "${env.GIT_BRANCH}" }
-                echo "VERSION: ${env.VERSION}"
+                echo "${env.GIT_BRANCH}"
+                echo "VERSION: ${VERSION}"
+                echo "env.VERSION: ${env.VERSION}"
 
 
                 withCredentials(bindings: [sshUserPrivateKey(
                         credentialsId: '4aac7d8c-0463-449d-8fa7-b0550b5a5e77',
                         keyFileVariable: 'SSH_KEY')]) {
                     echo "SSH_KEY: ${SSH_KEY}"
+                    sh "stat ${SSH_KEY}"
+                    sh "cat ${SSH_KEY}"
                 }
 
 

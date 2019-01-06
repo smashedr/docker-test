@@ -62,3 +62,8 @@ secrets:
 
 volumes:
   data_dir:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=nfs01.cssnr.com,rw
+      device: ":/data/docker/shane-docker-test"

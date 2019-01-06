@@ -23,7 +23,7 @@ pipeline {
         //}
         stage('Dev Deployment') {
             when {
-                changeRequest()
+                triggeredBy 'SCMTrigger'
             }
             environment {
                 ENV_FILE = "${GIT_REPO}/dev.env"

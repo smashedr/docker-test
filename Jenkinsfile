@@ -16,11 +16,12 @@ pipeline {
         COMPOSE_FILE = "docker-compose-swarm.yml"
     }
     stages {
-        //stage('Init') {
-        //    steps {
-        //        getEnvFiles("${GIT_ORG}-${GIT_REPO}")
-        //    }
-        //}
+        stage('Init') {
+            steps {
+                //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
+                echo "start init stage"
+            }
+        }
         stage('Dev Deployment') {
             when {
                 changeRequest()
@@ -66,11 +67,11 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            script {
-                currentBuild.result = currentBuild.result ?: 'SUCCESS'
-            }
-        }
-    }
+    //post {
+    //    always {
+    //        script {
+    //            currentBuild.result = currentBuild.result ?: 'SUCCESS'
+    //        }
+    //    }
+    //}
 }

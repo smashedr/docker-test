@@ -23,76 +23,53 @@ pipeline {
     stages {
         stage('Init') {
             steps {
-                // Checkout config files here...
-
+                echo "Starting Init..."
+                echo "STACK_NAME: ${STACK_NAME}"
                 echo "VERSION: ${VERSION}"
 
-                getConfigs("${GIT_ORG}-${GIT_REPO}")
-
+                // comment this out if you do not need config files
+                getConfigs()
             }
         }
-        stage('Dev Deployment') {
+        stage('Dev Deploy') {
             when {
-                not { triggeredBy 'UserIdCause' }
+                allOf {
+                    not { branch 'master' }
+                }
             }
             environment {
-                GString ENV_FILE = "${GIT_REPO}/dev.env"
+                GString ENV_FILE = "deploy-configs/services/${STACK_NAME}/dev.env"
                 GString FULL_STACK_NAME = "dev_${STACK_NAME}"
                 GString DOCKER_PORT = "${DEV_PORT_0}"
             }
             steps {
-                echo "this is a dev deployment"
-                withCredentials([[$class: 'UsernamePasswordMultiBinding',
-                                  credentialsId: '5c9a657c-23e1-43f6-a3b0-11e455d02902',
-                                  usernameVariable: 'USERNAME',
-                                  passwordVariable: 'PASSWORD']]) {
-
-                    // build should happen in different step, but combining now for simplicity
-                    sh "docker-compose -f ${COMPOSE_FILE} build --force-rm"
-                    sh "docker login --username ${USERNAME} --password ${PASSWORD} harbor01.cssnr.com"
-                    sh "docker-compose -f ${COMPOSE_FILE} push"
-                    // this should be the only thing done on a manager node and building should be on a slave
-                    sh "docker stack deploy ${FULL_STACK_NAME} -c ${COMPOSE_FILE} --with-registry-auth"
-
-                }
+                echo "Starting Dev Deploy..."
+                stackPush("${COMPOSE_FILE}")
+                stackDeploy("${FULL_STACK_NAME}", "${COMPOSE_FILE}")
             }
         }
-        stage('Production Deployment') {
+        stage('Prod Deploy') {
             when {
                 allOf {
-                    //equals expected: 'origin/master', actual: env.GIT_BRANCH
                     branch 'master'
                     triggeredBy 'UserIdCause'
                 }
             }
             environment {
-                GString ENV_FILE = "${GIT_REPO}/prod.env"
+                GString ENV_FILE = "deploy-configs/services/${STACK_NAME}/prod.env"
                 GString FULL_STACK_NAME = "prod_${STACK_NAME}"
                 GString DOCKER_PORT = "${PROD_PORT_0}"
             }
             steps {
-                echo "this is a prod deployment"
-                withCredentials([[$class: 'UsernamePasswordMultiBinding',
-                                  credentialsId: '5c9a657c-23e1-43f6-a3b0-11e455d02902',
-                                  usernameVariable: 'USERNAME',
-                                  passwordVariable: 'PASSWORD']]) {
-
-                    // build should happen in different step, but combining now for simplicity
-                    sh "docker-compose -f ${COMPOSE_FILE} build --force-rm"
-                    sh "docker login --username ${USERNAME} --password ${PASSWORD} harbor01.cssnr.com"
-                    sh "docker-compose -f ${COMPOSE_FILE} push"
-                    // this should be the only thing done on a manager node and building should be on a slave
-                    sh "docker stack deploy ${FULL_STACK_NAME} -c ${COMPOSE_FILE} --with-registry-auth"
-
-                }
+                echo "Starting Prod Deploy..."
+                stackPush("${COMPOSE_FILE}")
+                stackDeploy("${FULL_STACK_NAME}", "${COMPOSE_FILE}")
             }
         }
     }
-    //post {
-    //    always {
-    //        script {
-    //            currentBuild.result = currentBuild.result ?: 'SUCCESS'
-    //        }
-    //    }
-    //}
+    post {
+        always {
+            cleanWs()
+        }
+    }
 }

@@ -9,7 +9,6 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr:'5'))
         timeout(time: 1, unit: 'HOURS')
-        ansiColor('xterm')
     }
     environment {
         String GIT_ORG = "shane"

@@ -24,19 +24,10 @@ pipeline {
         stage('Init') {
             steps {
                 // Checkout config files here...
-                //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
 
                 echo "VERSION: ${VERSION}"
 
-
-                withCredentials(bindings: [sshUserPrivateKey(
-                        credentialsId: '4aac7d8c-0463-449d-8fa7-b0550b5a5e77',
-                        keyFileVariable: 'SSH_KEY')]) {
-                    echo "SSH_KEY: ${SSH_KEY}"
-                    sh "stat ${SSH_KEY}"
-                    sh "cat ${SSH_KEY}"
-                }
-
+                getConfigs("${GIT_ORG}-${GIT_REPO}")
 
             }
         }

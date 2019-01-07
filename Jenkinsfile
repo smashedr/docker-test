@@ -41,10 +41,10 @@ pipeline {
             }
             steps {
                 echo "Starting Dev Deploy..."
-                setupNfs("${FULL_STACK_NAME}")  // remove this if you do not need nfs volumes
-                getConfigs()  // remove this if you do not need config files
-                stackPush("${COMPOSE_FILE}")
-                stackDeploy("${FULL_STACK_NAME}", "${COMPOSE_FILE}")
+                setupNfs()  // remove this if you do not need nfs volumes
+                getConfigs()  // remove or comment this out if you do not need config files
+                stackPush()  // uses: "${COMPOSE_FILE}"
+                stackDeploy()  // uses: "${FULL_STACK_NAME}", "${COMPOSE_FILE}"
             }
         }
         stage('Prod Deploy') {
@@ -61,10 +61,10 @@ pipeline {
             }
             steps {
                 echo "Starting Prod Deploy..."
-                setupNfs("${FULL_STACK_NAME}")  // remove this if you do not need nfs volumes
+                setupNfs()  // remove this if you do not need nfs volumes
                 getConfigs()  // remove or comment this out if you do not need config files
-                stackPush("${COMPOSE_FILE}")
-                stackDeploy("${FULL_STACK_NAME}", "${COMPOSE_FILE}")
+                stackPush()  // uses: "${COMPOSE_FILE}"
+                stackDeploy()  // uses: "${FULL_STACK_NAME}", "${COMPOSE_FILE}"
             }
         }
     }

@@ -42,7 +42,7 @@ pipeline {
         }
         stage('Dev Deployment') {
             when {
-                triggeredBy 'UserIdCause-DISABLED'
+                not { triggeredBy 'UserIdCause' }
             }
             environment {
                 GString ENV_FILE = "${GIT_REPO}/dev.env"

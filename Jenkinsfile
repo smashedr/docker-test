@@ -1,5 +1,7 @@
 #!/usr/bin/env groovy
 
+@Library('jenkins-libraries')
+
 pipeline {
     agent {
         label 'manager'
@@ -16,17 +18,15 @@ pipeline {
         String PROD_PORT_0 = '10124'
         String COMPOSE_FILE = "docker-compose-swarm.yml"
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
-        VERSION = ("${env.GIT_BRANCH}" =~ /master/) ? "latest" : "${env.GIT_BRANCH}"
+        //VERSION = ("${env.GIT_BRANCH}" =~ /master/) ? "latest" : "${env.GIT_BRANCH}"
+        VERSION = getVersion("${env.GIT_BRANCH}")
     }
     stages {
         stage('Init') {
             steps {
                 // Checkout config files here...
                 //getEnvFiles("${GIT_ORG}-${GIT_REPO}")
-                script { env.VERSION = ("${env.GIT_BRANCH}" =~ /master/) ? "latest" : "${env.GIT_BRANCH}" }
-                echo "${env.GIT_BRANCH}"
                 echo "VERSION: ${VERSION}"
-                echo "env.VERSION: ${env.VERSION}"
 
 
                 withCredentials(bindings: [sshUserPrivateKey(

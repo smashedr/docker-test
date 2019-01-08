@@ -40,6 +40,7 @@ pipeline {
             }
             steps {
                 echo "Starting Dev Deploy..."
+                sendDiscord("smashed-coding", "Dev Deploy Started")
                 setupNfs()     // remove this if you do not need nfs volumes
                 getConfigs()   // remove this if you do not need config files
                 stackPush()    // uses: "${COMPOSE_FILE}"
@@ -60,6 +61,7 @@ pipeline {
             }
             steps {
                 echo "Starting Prod Deploy..."
+                sendDiscord("smashed-coding", "Prod Deploy Started")
                 setupNfs()     // remove this if you do not need nfs volumes
                 getConfigs()   // remove this if you do not need config files
                 stackPush()    // uses: "${COMPOSE_FILE}"
@@ -69,6 +71,8 @@ pipeline {
     }
     post {
         always {
+            echo "currentBuild.currentResult: ${currentBuild.result}"
+            sendDiscord("smashed-coding", "Deploy Finished: ${currentBuild.currentResult}")
             cleanWs()
         }
     }

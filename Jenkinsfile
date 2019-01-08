@@ -71,9 +71,8 @@ pipeline {
     }
     post {
         always {
-            echo "Pipeline result: ${currentBuild.result}"
-            echo "Pipeline currentResult: ${currentBuild.currentResult}"
-            sendDiscord("smashed-coding", "Deploy Finished: ${currentBuild.result}")
+            echo "currentBuild.currentResult: ${currentBuild.result}"
+            sendDiscord("smashed-coding", "Deploy Finished: ${currentBuild.currentResult}")
             cleanWs()
         }
     }

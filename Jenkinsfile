@@ -30,9 +30,10 @@ pipeline {
                         "VERSION:       ${VERSION}\n"
                 verifyBuild()
                 getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
-
-                currentBuild.rawBuild.result = Result.ABORTED
-                throw( new hudson.AbortException("Test Abort."))
+                script {
+                    currentBuild.rawBuild.result = Result.ABORTED
+                    throw (new hudson.AbortException("Test Abort."))
+                }
             }
         }
         stage('Dev Deploy') {

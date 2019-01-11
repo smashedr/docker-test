@@ -11,8 +11,8 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }
     environment {
-        String GIT_ORG = "shane"
-        String GIT_REPO = "docker-test"
+        String GIT_ORG = getGitGroup()
+        String GIT_REPO = getGitRepo()
         String DEV_PORT = '10123'
         String PROD_PORT = '10124'
         String COMPOSE_FILE = "docker-compose-swarm.yml"
@@ -29,6 +29,10 @@ pipeline {
                         "GIT_BRANCH:    ${GIT_BRANCH}\n" +
                         "VERSION:       ${VERSION}\n"
                 verifyBuild()
+                getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
+
+                currentBuild.rawBuild.result = Result.ABORTED
+                throw( new hudson.AbortException("Test Abort."))
             }
         }
         stage('Dev Deploy') {
@@ -44,9 +48,8 @@ pipeline {
             }
             steps {
                 echo "Starting Dev Deploy..."
-                sendDiscord("smashed-coding", "Dev Deploy Started")
+                sendDiscord("smashed-alerts", "Dev Deploy Started")
                 setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
-                getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
             }
@@ -65,9 +68,8 @@ pipeline {
             }
             steps {
                 echo "Starting Prod Deploy..."
-                sendDiscord("smashed-coding", "Prod Deploy Started")
+                sendDiscord("smashed-alerts", "Prod Deploy Started")
                 setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
-                getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
             }
@@ -76,7 +78,7 @@ pipeline {
     post {
         always {
             script { if (!env.INVALID_BUILD) {
-                sendDiscord("smashed-coding", "Deploy Finished: ${currentBuild.currentResult}")
+                sendDiscord("smashed-alerts", "Deploy Finished: ${currentBuild.currentResult}")
             } }
             cleanWs()
         }

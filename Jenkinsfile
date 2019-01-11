@@ -14,10 +14,10 @@ pipeline {
         String DEV_PORT = '10123'
         String PROD_PORT = '10124'
         String COMPOSE_FILE = "docker-compose-swarm.yml"
+        String BUILD_CAUSE = getBuildCause()
         String GIT_ORG = getGitGroup("${GIT_URL}")
         String GIT_REPO = getGitRepo("${GIT_URL}")
         String VERSION = getVersion("${GIT_BRANCH}")
-        String BUILD_CAUSE = getBuildCause("${GIT_BRANCH}")
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
         GString SERVICE_NAME = "${STACK_NAME}"
     }

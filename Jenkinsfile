@@ -76,7 +76,11 @@ pipeline {
     post {
         always {
             echo "currentBuild.currentResult: ${currentBuild.result}"
-            sendDiscord("smashed-coding", "Deploy Finished: ${currentBuild.currentResult}")
+            script {
+                if (! binding.hasVariable("${env.INVALID_BUILD}") ) {
+                    sendDiscord("smashed-coding", "Deploy Finished: ${currentBuild.currentResult}")
+                }
+            }
             cleanWs()
         }
     }

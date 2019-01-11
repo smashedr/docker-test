@@ -11,14 +11,13 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }
     environment {
-        String GIT_ORG = getGitGroup("${GIT_URL}")
-        String GIT_REPO = getGitRepo("${GIT_URL}")
-//        String GIT_ORG = "shane"
-//        String GIT_REPO = "docker-test"
         String DEV_PORT = '10123'
         String PROD_PORT = '10124'
         String COMPOSE_FILE = "docker-compose-swarm.yml"
+        String GIT_ORG = getGitGroup("${GIT_URL}")
+        String GIT_REPO = getGitRepo("${GIT_URL}")
         String VERSION = getVersion("${GIT_BRANCH}")
+        String BUILD_CAUSE = getBuildCause("${GIT_BRANCH}")
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
         GString SERVICE_NAME = "${STACK_NAME}"
     }
@@ -28,18 +27,11 @@ pipeline {
                 echo "\n--- Build Details ---\n" +
                         "SERVICE_NAME:  ${SERVICE_NAME}\n" +
                         "STACK_NAME:    ${STACK_NAME}\n" +
+                        "BUILD_CAUSE:   ${BUILD_CAUSE}\n" +
                         "GIT_BRANCH:    ${GIT_BRANCH}\n" +
                         "VERSION:       ${VERSION}\n"
                 verifyBuild()
                 getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
-
-                script {
-                    echo "GIT_URL: ${GIT_URL}"
-//                    def group = getGitGroup("${GIT_URL}")
-//                    echo group
-                    currentBuild.rawBuild.result = Result.ABORTED
-                    throw (new hudson.AbortException("Test Abort."))
-                }
             }
         }
         stage('Dev Deploy') {

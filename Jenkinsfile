@@ -77,7 +77,7 @@ pipeline {
         always {
             echo "currentBuild.currentResult: ${currentBuild.result}"
             script {
-                if (! binding.hasVariable("${env.INVALID_BUILD}") ) {
+                if (! binding.hasVariable("INVALID_BUILD") ) {
                     sendDiscord("smashed-coding", "Deploy Finished: ${currentBuild.currentResult}")
                 }
             }

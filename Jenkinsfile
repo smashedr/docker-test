@@ -35,8 +35,8 @@ pipeline {
 
                 script {
                     echo "GIT_URL: ${GIT_URL}"
-//                    def group = getGitGroup("${GIT_URL}")
-//                    echo group
+                    def group = getGitGroup("${GIT_URL}")
+                    echo group
                     currentBuild.rawBuild.result = Result.ABORTED
                     throw (new hudson.AbortException("Test Abort."))
                 }

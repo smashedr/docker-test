@@ -18,16 +18,16 @@ pipeline {
         String COMPOSE_FILE = "docker-compose-swarm.yml"
         String VERSION = getVersion("${GIT_BRANCH}")
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
-        GString SERVICE_NAME = "${GIT_ORG}-${GIT_REPO}"
+        GString SERVICE_NAME = "${STACK_NAME}"
     }
     stages {
         stage('Init') {
             steps {
-                echo "\nBuild Details:\n" +
+                echo "\n--- Build Details ---\n" +
                         "SERVICE_NAME:  ${SERVICE_NAME}\n" +
-                        "STACK_NAME:  ${STACK_NAME}\n" +
-                        "GIT_BRANCH:  ${GIT_BRANCH}\n" +
-                        "VERSION:     ${VERSION}\n"
+                        "STACK_NAME:    ${STACK_NAME}\n" +
+                        "GIT_BRANCH:    ${GIT_BRANCH}\n" +
+                        "VERSION:       ${VERSION}\n"
                 verifyBuild()
             }
         }

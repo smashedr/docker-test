@@ -75,12 +75,10 @@ pipeline {
     }
     post {
         always {
-            echo "currentBuild.currentResult: ${currentBuild.result}"
-            script {
-                if (!env.INVALID_BUILD) {
-                    sendDiscord("smashed-coding", "Deploy Finished: ${currentBuild.currentResult}")
-                }
-            }
+            script { if (!env.INVALID_BUILD) {
+                echo "Invalid build was set in verifyBuild script."
+                sendDiscord("smashed-coding", "Deploy Finished: ${currentBuild.currentResult}")
+            } }
             cleanWs()
         }
     }

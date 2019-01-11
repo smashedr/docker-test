@@ -17,9 +17,9 @@ pipeline {
         String COMPOSE_FILE = "docker-compose-swarm.yml"
 
         String BUILD_CAUSE = getBuildCause()
+        String VERSION = getVersion("${GIT_BRANCH}")
         String GIT_ORG = getGitGroup("${GIT_URL}")
         String GIT_REPO = getGitRepo("${GIT_URL}")
-        String VERSION = getVersion("${GIT_BRANCH}")
 
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
         GString SERVICE_NAME = "${STACK_NAME}"
@@ -29,6 +29,7 @@ pipeline {
             steps {
                 echo "\n--- Build Details ---\n" +
                         "GIT_URL:       ${GIT_URL}\n" +
+                        "JOB_NAME:      ${JOB_NAME}\n" +
                         "SERVICE_NAME:  ${SERVICE_NAME}\n" +
                         "STACK_NAME:    ${STACK_NAME}\n" +
                         "BUILD_CAUSE:   ${BUILD_CAUSE}\n" +

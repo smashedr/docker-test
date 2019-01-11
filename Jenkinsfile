@@ -18,11 +18,13 @@ pipeline {
         String COMPOSE_FILE = "docker-compose-swarm.yml"
         String VERSION = getVersion("${GIT_BRANCH}")
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
+        GString SERVICE_NAME = "${GIT_ORG}-${GIT_REPO}"
     }
     stages {
         stage('Init') {
             steps {
                 echo "\nBuild Details:\n" +
+                        "SERVICE_NAME:  ${SERVICE_NAME}\n" +
                         "STACK_NAME:  ${STACK_NAME}\n" +
                         "GIT_BRANCH:  ${GIT_BRANCH}\n" +
                         "VERSION:     ${VERSION}\n"
@@ -36,15 +38,15 @@ pipeline {
                 }
             }
             environment {
-                GString ENV_FILE = "deploy-configs/services/${STACK_NAME}/dev.env"
+                GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/dev.env"
                 GString STACK_NAME = "dev_${STACK_NAME}"
                 GString DOCKER_PORT = "${DEV_PORT}"
             }
             steps {
                 echo "Starting Dev Deploy..."
                 sendDiscord("smashed-coding", "Dev Deploy Started")
-                setupNfs("${STACK_NAME}")    // remove this if you do not need nfs volumes
-                getConfigs("${STACK_NAME}")  // remove this if you do not need config files
+                setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
+                getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
             }
@@ -57,15 +59,15 @@ pipeline {
                 }
             }
             environment {
-                GString ENV_FILE = "deploy-configs/services/${STACK_NAME}/prod.env"
+                GString ENV_FILE = "deploy-configs/services/${SERVICE_NAME}/prod.env"
                 GString STACK_NAME = "prod_${STACK_NAME}"
                 GString DOCKER_PORT = "${PROD_PORT}"
             }
             steps {
                 echo "Starting Prod Deploy..."
                 sendDiscord("smashed-coding", "Prod Deploy Started")
-                setupNfs("${STACK_NAME}")    // remove this if you do not need nfs volumes
-                getConfigs("${STACK_NAME}")  // remove this if you do not need config files
+                setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
+                getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
             }

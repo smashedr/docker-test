@@ -34,8 +34,9 @@ pipeline {
                 getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
 
                 script {
-                    def group = getGitGroup("${GIT_URL}")
-                    echo group
+                    echo "GIT_URL: ${GIT_URL}"
+//                    def group = getGitGroup("${GIT_URL}")
+//                    echo group
                     currentBuild.rawBuild.result = Result.ABORTED
                     throw (new hudson.AbortException("Test Abort."))
                 }

@@ -13,11 +13,14 @@ pipeline {
     environment {
         String DEV_PORT = '10123'
         String PROD_PORT = '10124'
+        String DISCORD_ID = "smashed-alerts"
         String COMPOSE_FILE = "docker-compose-swarm.yml"
+
         String BUILD_CAUSE = getBuildCause()
         String GIT_ORG = getGitGroup("${GIT_URL}")
         String GIT_REPO = getGitRepo("${GIT_URL}")
         String VERSION = getVersion("${GIT_BRANCH}")
+
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
         GString SERVICE_NAME = "${STACK_NAME}"
     }
@@ -25,12 +28,14 @@ pipeline {
         stage('Init') {
             steps {
                 echo "\n--- Build Details ---\n" +
+                        "GIT_URL:       ${GIT_URL}\n" +
                         "SERVICE_NAME:  ${SERVICE_NAME}\n" +
                         "STACK_NAME:    ${STACK_NAME}\n" +
                         "BUILD_CAUSE:   ${BUILD_CAUSE}\n" +
                         "GIT_BRANCH:    ${GIT_BRANCH}\n" +
                         "VERSION:       ${VERSION}\n"
                 verifyBuild()
+                sendDiscord("${DISCORD_ID}", "Started by: ${BUILD_CAUSE}")
                 getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
             }
         }
@@ -47,7 +52,7 @@ pipeline {
             }
             steps {
                 echo "Starting Dev Deploy..."
-                sendDiscord("smashed-alerts", "Dev Deploy Started")
+                sendDiscord("${DISCORD_ID}", "Dev Deploy Started")
                 setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
@@ -67,7 +72,7 @@ pipeline {
             }
             steps {
                 echo "Starting Prod Deploy..."
-                sendDiscord("smashed-alerts", "Prod Deploy Started")
+                sendDiscord("${DISCORD_ID}", "Prod Deploy Started")
                 setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
@@ -76,10 +81,10 @@ pipeline {
     }
     post {
         always {
-            script { if (!env.INVALID_BUILD) {
-                sendDiscord("smashed-alerts", "Deploy Finished: ${currentBuild.currentResult}")
-            } }
             cleanWs()
+            script { if (!env.INVALID_BUILD) {
+                sendDiscord("${DISCORD_ID}", "Finished: ${currentBuild.currentResult}")
+            } }
         }
     }
 }

@@ -36,7 +36,7 @@ pipeline {
                         "GIT_BRANCH:    ${GIT_BRANCH}\n" +
                         "VERSION:       ${VERSION}\n"
                 verifyBuild()
-                sendDiscord("${DISCORD_ID}", "Started by: ${BUILD_CAUSE}")
+                sendDiscord("${DISCORD_ID}", "Pipeline Started by: ${BUILD_CAUSE}")
                 getConfigs("${SERVICE_NAME}")   // remove this if you do not need config files
             }
         }
@@ -57,6 +57,7 @@ pipeline {
                 setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
+                sendDiscord("${DISCORD_ID}", "Dev Deploy Finished")
             }
         }
         stage('Prod Deploy') {
@@ -77,6 +78,7 @@ pipeline {
                 setupNfs("${STACK_NAME}")       // remove this if you do not need nfs volumes
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
+                sendDiscord("${DISCORD_ID}", "Prod Deploy Finished")
             }
         }
     }
@@ -84,7 +86,7 @@ pipeline {
         always {
             cleanWs()
             script { if (!env.INVALID_BUILD) {
-                sendDiscord("${DISCORD_ID}", "Finished: ${currentBuild.currentResult}")
+                sendDiscord("${DISCORD_ID}", "Pipeline Complete: ${currentBuild.currentResult}")
             } }
         }
     }

@@ -11,8 +11,8 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }
     environment {
-        String GIT_ORG = getGitGroup()
-        String GIT_REPO = getGitRepo()
+        String GIT_ORG = getGitGroup("${GIT_URL}")
+        String GIT_REPO = getGitRepo("${GIT_URL}")
         String DEV_PORT = '10123'
         String PROD_PORT = '10124'
         String COMPOSE_FILE = "docker-compose-swarm.yml"

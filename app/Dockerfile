@@ -9,10 +9,10 @@ RUN apk add --update --no-cache \
     mysql-dev \
     openldap-dev \
     pcre \
-    pcre-dev
+    pcre-dev \
     python3 \
     python3-dev \
-    py3-pip \
+    py3-pip
 
 ENV INSTALL_PATH /app
 RUN mkdir -p ${INSTALL_PATH}

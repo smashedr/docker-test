@@ -11,10 +11,10 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }
     environment {
-        //String GIT_ORG = getGitGroup("${GIT_URL}")
-        //String GIT_REPO = getGitRepo("${GIT_URL}")
-        String GIT_ORG = "shane"
-        String GIT_REPO = "docker-test"
+        String GIT_ORG = getGitGroup("${GIT_URL}")
+        String GIT_REPO = getGitRepo("${GIT_URL}")
+//        String GIT_ORG = "shane"
+//        String GIT_REPO = "docker-test"
         String DEV_PORT = '10123'
         String PROD_PORT = '10124'
         String COMPOSE_FILE = "docker-compose-swarm.yml"
@@ -35,8 +35,8 @@ pipeline {
 
                 script {
                     echo "GIT_URL: ${GIT_URL}"
-                    def group = getGitGroup("${GIT_URL}")
-                    echo group
+//                    def group = getGitGroup("${GIT_URL}")
+//                    echo group
                     currentBuild.rawBuild.result = Result.ABORTED
                     throw (new hudson.AbortException("Test Abort."))
                 }

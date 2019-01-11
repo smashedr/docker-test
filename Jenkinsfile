@@ -16,15 +16,17 @@ pipeline {
         String DEV_PORT = '10123'
         String PROD_PORT = '10124'
         String COMPOSE_FILE = "docker-compose-swarm.yml"
-        String VERSION = getVersion("${env.GIT_BRANCH}")
+        String VERSION = getVersion("${GIT_BRANCH}")
         GString STACK_NAME = "${GIT_ORG}-${GIT_REPO}"
     }
     stages {
         stage('Init') {
             steps {
-                echo "STACK_NAME: ${STACK_NAME}"
-                echo "GIT_BRANCH: ${env.GIT_BRANCH}"
-                echo "VERSION: ${VERSION}"
+                echo "\nBuild Details:\n" +
+                        "STACK_NAME: ${STACK_NAME}\n" +
+                        "GIT_BRANCH: ${GIT_BRANCH}\n" +
+                        "VERSION: ${VERSION}\n"
+                verifyBuild()
             }
         }
         stage('Dev Deploy') {

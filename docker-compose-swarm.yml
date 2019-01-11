@@ -5,7 +5,6 @@ services:
     build: ./app
     image: harbor01.cssnr.com/shane/docker-test-app:${VERSION}
     env_file: ${ENV_FILE}
-    entrypoint: ["bash", "init.sh", "app"]
     command: "gunicorn self_service.wsgi:application --workers 2 -b 0.0.0.0:9000"
     healthcheck:
       interval: 1m

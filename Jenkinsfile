@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-@Library('jenkins-libraries')_
+@Library('jenkins-libraries@nfs')_
 
 pipeline {
     agent {
@@ -15,6 +15,7 @@ pipeline {
         PROD_PORT = '10124'
         DISCORD_ID = "smashed-alerts"
         COMPOSE_FILE = "docker-compose-swarm.yml"
+        NFS_HOSTNAME = "ftpback-bhs1-79.ip-198-100-151.net"
 
         BUILD_CAUSE = getBuildCause()
         VERSION = getVersion("${GIT_BRANCH}")
@@ -23,7 +24,6 @@ pipeline {
 
         BASE_NAME = "${GIT_ORG}-${GIT_REPO}"
         SERVICE_NAME = "${BASE_NAME}"
-        NFS_HOST = "nfs01.cssnr.com"
     }
     stages {
         stage('Init') {
@@ -58,9 +58,10 @@ pipeline {
                         "STACK_NAME:    ${STACK_NAME}\n" +
                         "DOCKER_PORT:   ${DOCKER_PORT}\n" +
                         "NFS_DIRECTORY: ${NFS_DIRECTORY}\n" +
+                        "NFS_HOSTNAME: ${NFS_HOSTNAME}\n" +
                         "ENV_FILE:      ${ENV_FILE}\n"
                 sendDiscord("${DISCORD_ID}", "Dev Deploy Started")
-                setupNfs("${STACK_NAME}")
+                setupNfs("${STACK_NAME}", "${NFS_HOSTNAME}")
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
                 sendDiscord("${DISCORD_ID}", "Dev Deploy Finished")
@@ -84,9 +85,10 @@ pipeline {
                         "STACK_NAME:    ${STACK_NAME}\n" +
                         "DOCKER_PORT:   ${DOCKER_PORT}\n" +
                         "NFS_DIRECTORY: ${NFS_DIRECTORY}\n" +
+                        "NFS_HOSTNAME: ${NFS_HOSTNAME}\n" +
                         "ENV_FILE:      ${ENV_FILE}\n"
                 sendDiscord("${DISCORD_ID}", "Prod Deploy Started")
-                setupNfs("${STACK_NAME}")
+                setupNfs("${STACK_NAME}", "${NFS_HOSTNAME}")
                 stackPush("${COMPOSE_FILE}")
                 stackDeploy("${COMPOSE_FILE}", "${STACK_NAME}")
                 sendDiscord("${DISCORD_ID}", "Prod Deploy Finished")

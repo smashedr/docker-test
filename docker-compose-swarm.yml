@@ -64,5 +64,5 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: "addr=${NFS_HOSTNAME},rw,user=${NFS_USERNAME},pass=${NFS_PASSWORD}"
+      o: "addr=${NFS_HOSTNAME},user=${NFS_USERNAME},pass=${NFS_PASSWORD},rw"
       device: ":/docker/services/${NFS_DIRECTORY}"
